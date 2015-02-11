@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="account_invoice_customer_next_number">
+            <field name="name">account.invoice.customer.next.number</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="(//field[@name='account_id'])" position="after">
+                    <field name="next_number" attrs="{'invisible': [('state', '!=', 'draft')]}"/> 
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="account_invoice_supplier_next_number">
+            <field name="name">account.invoice.supplier.next.number</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="(//field[@name='journal_id'])[1]" position="after">
+                    <field name="next_number" attrs="{'invisible': [('state', '!=', 'draft')]}"/> 
+                </xpath>
+            </field>
+        </record>
+	</data>
+</openerp>
