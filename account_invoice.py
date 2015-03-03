@@ -2,7 +2,7 @@ from openerp import models, fields, api
 
 class account_next_sequence(models.Model):
     _inherit = ['account.invoice']
-    next_number = fields.Char(compute='_compute_next_number',string="Next invoice number", store=False)
+    next_number = fields.Char(compute='_compute_next_number',string="Next document number", store=False)
     
     @api.depends('journal_id')
     def _compute_next_number(self):
