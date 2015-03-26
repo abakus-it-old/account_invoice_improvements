@@ -39,6 +39,17 @@ class account_next_sequence(models.Model):
         else:
             self.next_number = ""
     
-    @api.onchange('supplier_invoice_number')
+   @api.onchange('supplier_invoice_number')
     def update_reference(self):
-        self.reference = self.supplier_invoice_number
+        if self.partner_id:
+            cr = self.env.cr
+            uid = self.env.user.id
+            account_invoice_obj = self.pool.get('account.invoice')
+            account_invoices = account_invoice_obj.search(cr, uid, [('supplier_invoice_number', '=', self.supplier_invoice_number),('partner_id','=',self.partner_id.id)])
+            if account_invoices:
+                self.reference = ""
+                return {'warning': {'title': 'Supplier Invoice Number Failure', 'message': 'The supplier invoice number already exists'},}
+            else:
+                self.reference = self.supplier_invoice_number
+        else:
+            self.reference = self.supplier_invoice_number
