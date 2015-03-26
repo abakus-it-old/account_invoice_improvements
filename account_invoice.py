@@ -39,7 +39,7 @@ class account_next_sequence(models.Model):
         else:
             self.next_number = ""
     
-   @api.onchange('supplier_invoice_number')
+    @api.onchange('supplier_invoice_number')
     def update_reference(self):
         if self.partner_id:
             cr = self.env.cr
