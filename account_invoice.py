@@ -41,7 +41,7 @@ class account_next_sequence(models.Model):
     
     @api.onchange('supplier_invoice_number')
     def update_reference(self):
-        if self.partner_id:
+        if self.partner_id and self.supplier_invoice_number and len(self.supplier_invoice_number)>0:
             cr = self.env.cr
             uid = self.env.user.id
             account_invoice_obj = self.pool.get('account.invoice')
