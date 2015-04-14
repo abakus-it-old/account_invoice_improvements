@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+         <record model="ir.ui.view" id="account_move_line_search_new_filter_view">
+           <field name="name">account.move.line.new.filter</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">
+                <filter string='Period' position="after">
+                    <filter string="Journal Entry" icon="terp-go-month" domain="[]" context="{'group_by':'move_id'}"/>
+                </filter>
+            </field>
+        </record>
+    </data>
+</openerp>
