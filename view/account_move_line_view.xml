@@ -14,6 +14,7 @@
                 <filter string='Next Partner to Reconcile' position="after">
                     <!-- <filter string="Journal Entry" domain="['|','&amp;',('journal_id.code','=','ODPA'),('account_id.code','in',('440000','400000')),'|','&amp;',('journal_id.code','=','ACH'),('account_id.code','=','440000'),'|','&amp;',('journal_id.code','=','ING'),('account_id.code','=','550100'),'&amp;',('journal_id.code','=','KBC'),('account_id.code','=','550000')]"/>-->
                     <filter string="Compte Fournisseur" domain="[('account_id.code','=like','44%')]"/>
+                    <filter string="Compte Client" domain="[('account_id.code','=like','40%')]"/>
                 </filter>
             </field>
         </record>
