@@ -6,14 +6,7 @@ class account_next_sequence(models.Model):
     
     @api.depends('journal_id')
     def _compute_next_number(self):
-        if self.state in ("","draft"):
-            nn_int = self.journal_id.sequence_id.number_next
-            nn_string = str(nn_int)
-            
-            #new API does not work!
-            #nn_ex_string = self.env['account.invoice'].search([['journal_id','=',self.journal_id.id],['number', '!=', '']], limit=1).number
-            
-            #own old api integration
+        if self.state in ("","draft") and self.journal_id and self.journal_id.id:
             cr = self.env.cr
             uid = self.env.user.id
             obj = self.pool.get('account.invoice')
@@ -21,7 +14,7 @@ class account_next_sequence(models.Model):
             
             nn_ex_string = ""
             if invoice_id:
-                nn_ex_string = (obj.browse(cr, uid, invoice_id[0]))[0].number#len(invoice_id)-1
+                nn_ex_string = (obj.browse(cr, uid, invoice_id[0]))[0].number
             
             l = len(nn_ex_string)-1
             if l > 0:
