@@ -2,7 +2,7 @@
     'name': "AbAKUS invoice improvements",
     'version': '1.0',
     'depends': ['account'],
-    'author': "Valentin THIRION, AbAKUS it-solutions SARL",
+    'author': "Valentin THIRION & Bernard DELHEZ, AbAKUS it-solutions SARL",
     'website': "http://www.abakusitsolutions.eu",
     'category': 'Accounting',
     'description': 
@@ -14,8 +14,8 @@
         - it adds a group by in account.move.line that groups by journal entry.
         - it changes the fields order in the treeview of account.move.line.
         - it adds a filter that filters on special journals and accounts
-    
-    This module has been developed by Bernard Delhez, intern @ AbAKUS it-solutions, under the control of Valentin Thirion.
+        - it checks if all the lines of the invoices contains at least one tax
+
     """,
     'data': ['view/account_invoice_view.xml','view/account_move_line_view.xml'],
     'demo': [],

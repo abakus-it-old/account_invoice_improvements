@@ -6,7 +6,14 @@ class account_next_sequence(models.Model):
     
     @api.depends('journal_id')
     def _compute_next_number(self):
-        if self.state in ("","draft") and self.journal_id and self.journal_id.id:
+        if self.state in ("","draft"):
+            nn_int = self.journal_id.sequence_id.number_next
+            nn_string = str(nn_int)
+            
+            #new API does not work!
+            #nn_ex_string = self.env['account.invoice'].search([['journal_id','=',self.journal_id.id],['number', '!=', '']], limit=1).number
+            
+            #own old api integration
             cr = self.env.cr
             uid = self.env.user.id
             obj = self.pool.get('account.invoice')
@@ -14,7 +21,7 @@ class account_next_sequence(models.Model):
             
             nn_ex_string = ""
             if invoice_id:
-                nn_ex_string = (obj.browse(cr, uid, invoice_id[0]))[0].number
+                nn_ex_string = (obj.browse(cr, uid, invoice_id[0]))[0].number#len(invoice_id)-1
             
             l = len(nn_ex_string)-1
             if l > 0:
@@ -46,3 +53,30 @@ class account_next_sequence(models.Model):
                 self.reference = self.supplier_invoice_number
         else:
             self.reference = self.supplier_invoice_number
+
+    @api.multi
+    def action_validate_invoice(self):
+        return self.validate_invoice(False)
+
+    @api.multi
+    def action_validate_and_send_invoice(self):
+        return self.validate_invoice(True)
+    
+    def validate_invoice(self, send):
+        for line in self.invoice_line:
+            if len(line.invoice_line_tax_id) == 0:
+                return {'warning': {'title': 'No tax', 'message': 'A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.'},}
+
+        #Methods for the validation of the invoice.
+        self.action_date_assign()
+        self.action_move_create()
+        self.action_number()
+
+        if (send):
+            #Method that change the attribute "sent" from the invoice to True.
+            self.invoice_validate()
+            #Method that return the mail form.
+            return self.action_invoice_sent()
+        
+        #Method that change the attribute "sent" from the invoice to True.
+        return self.invoice_validate()

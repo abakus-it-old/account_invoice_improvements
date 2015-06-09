@@ -6,6 +6,12 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
+                <xpath expr="(//button[@string='Validate'])[1]" position="replace">
+                    <button name="action_validate_invoice" type="object" string="Validate Invoice" attrs="{'invisible':['|',('sent','=',True),('state','in',('open', 'cancel','paid'))]}" class="oe_highlight" groups="base.group_user"/>
+                </xpath>
+                <xpath expr="(//button[@string='Validate'])[1]" position="after">
+                    <button name="action_validate_and_send_invoice" type="object" string="Validate and Send" attrs="{'invisible':['|',('sent','=',True),('state','in',('open', 'cancel','paid'))]}" class="oe_highlight" groups="base.group_user"/>
+                </xpath>
                 <xpath expr="(//field[@name='account_id'])" position="after">
                     <field name="next_number" attrs="{'invisible': [('state', '!=', 'draft')]}"/> 
                 </xpath>

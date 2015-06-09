@@ -6,5 +6,4 @@ This modules adds some functionalities to the invoicing process for AbAKUS.
     - it adds a group by in account.move.line that groups by journal entry.
     - it changes the fields order in the treeview of account.move.line.
     - it adds a filter that filters on special journals and accounts
-
-This module has been developed by Bernard Delhez, intern @ AbAKUS it-solutions, under the control of Valentin Thirion.
+    - it checks if all the lines of the invoices contains at least one tax
