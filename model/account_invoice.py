@@ -65,7 +65,16 @@ class account_next_sequence(models.Model):
     def validate_invoice(self, send):
         for line in self.invoice_line:
             if len(line.invoice_line_tax_id) == 0:
-                return {'warning': {'title': 'No tax', 'message': 'A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.'},}
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'action_warn',
+                    'name': 'Failure',
+                    'params': {
+                        'title': 'No tax',
+                        'text': 'A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.',
+                        'sticky': True
+                    }
+                }
 
         #Methods for the validation of the invoice.
         self.action_date_assign()
