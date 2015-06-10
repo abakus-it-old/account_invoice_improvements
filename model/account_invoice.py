@@ -72,7 +72,7 @@ class account_next_sequence(models.Model):
                     'params': {
                         'title': 'No tax',
                         'text': 'A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.',
-                        'sticky': True
+                        'sticky': False
                     }
                 }
 
