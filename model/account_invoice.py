@@ -59,10 +59,11 @@ class account_next_sequence(models.Model):
         return self.validate_invoice(False)
 
     @api.multi
-    def action_validate_and_send_invoice(self):
+    def action_validate_invoice_send(self):
         return self.validate_invoice(True)
-    
-    def validate_invoice(self, send):
+
+    @api.multi
+    def check_validate_and_send_invoice_if_out(self):
         for line in self.invoice_line:
             if len(line.invoice_line_tax_id) == 0:
                 return {
@@ -81,11 +82,8 @@ class account_next_sequence(models.Model):
         self.action_move_create()
         self.action_number()
 
-        if (send):
-            #Method that change the attribute "sent" from the invoice to True.
+        if self.type == 'out_invoice':
             self.invoice_validate()
             #Method that return the mail form.
             return self.action_invoice_sent()
-        
-        #Method that change the attribute "sent" from the invoice to True.
         return self.invoice_validate()
