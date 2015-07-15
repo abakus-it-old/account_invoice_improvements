@@ -16,9 +16,6 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
-                <xpath expr="(//button[@name='invoice_open'])" position="before">
-                    <button name="action_validate_invoice" type="object" string="Validate Invoice" attrs="{'invisible':['|',('state','in',('open', 'cancel','paid'))]}" class="oe_highlight" groups="base.group_user"/>
-                </xpath>
                 <xpath expr="(//field[@name='journal_id'])[1]" position="after">
                     <field name="next_number" attrs="{'invisible': [('state', '!=', 'draft')]}"/> 
                 </xpath>
