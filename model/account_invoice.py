@@ -60,6 +60,7 @@ class account_next_sequence(models.Model):
         for line in self.invoice_line:
             if len(line.invoice_line_tax_id) == 0:
                 raise except_orm(_('No tax!'), _('A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.'))
+                self.write({'state': 'draft'})
 
         #Methods for the validation of the invoice.
         self.action_date_assign()
