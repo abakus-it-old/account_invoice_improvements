@@ -55,14 +55,6 @@ class account_next_sequence(models.Model):
             self.reference = self.supplier_invoice_number
 
     @api.multi
-    def action_validate_invoice(self):
-        return self.validate_invoice(False)
-
-    @api.multi
-    def action_validate_invoice_send(self):
-        return self.validate_invoice(True)
-
-    @api.multi
     def check_validate_and_send_invoice_if_out(self):
         for line in self.invoice_line:
             if len(line.invoice_line_tax_id) == 0:
