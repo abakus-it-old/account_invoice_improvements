@@ -1,4 +1,5 @@
 from openerp import models, fields, api
+from openerp.exceptions import except_orm
 
 class account_next_sequence(models.Model):
     _inherit = ['account.invoice']
