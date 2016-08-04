@@ -1,59 +1,47 @@
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm
-
-class account_line_analytic_mandatory(models.Model):
-    _inherit = ['account.invoice.line']
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=True) # Make this field mandatory
+from openerp.exceptions import ValidationError
 
 class account_next_sequence(models.Model):
     _inherit = ['account.invoice']
-    next_number = fields.Char(compute='_compute_next_number',string="Next document number", store=False)
-    
+
+    next_invoice_number = fields.Char(compute='_compute_next_invoice_number', string="Next document number", store=False)
+
+    @api.one
     @api.depends('journal_id')
-    def _compute_next_number(self):
-        if self.state in ("","draft"):
+    def _compute_next_invoice_number(self):
+        if not self.journal_id:
+            self.next_invoice_number =  "NO JOURNAL SELECTED"
+            return
+
+        if self.state in ("", "draft"):
             nn_int = self.journal_id.sequence_id.number_next
             nn_string = str(nn_int)
             
-            #new API does not work!
-            #nn_ex_string = self.env['account.invoice'].search([['journal_id','=',self.journal_id.id],['number', '!=', '']], limit=1).number
-            
-            #own old api integration
-            cr = self.env.cr
-            uid = self.env.user.id
-            obj = self.pool.get('account.invoice')
-            invoice_id = obj.search(cr, uid, [('journal_id','=',self.journal_id.id),('number', '!=', '')])
-            
-            nn_ex_string = ""
-            if invoice_id:
-                nn_ex_string = (obj.browse(cr, uid, invoice_id[0]))[0].number#len(invoice_id)-1
-            
-            l = len(nn_ex_string)-1
+            nn_ex_string = self.env['account.invoice'].search([['journal_id','=',self.journal_id.id],['number', '!=', '']], limit=1).number
+
+            l = len(nn_ex_string) - 1
             if l > 0:
                 cpt = 0;
-                for i in range(l,0,-1):
+                for i in range(l, 0, -1):
                     if nn_ex_string[i].isnumeric():
-                        cpt+=1
+                        cpt += 1
                     else:
                         break
-                seq = int(nn_ex_string[-cpt:])+1
+                seq = int(nn_ex_string[-cpt:]) + 1
                 nn = nn_ex_string[:-cpt]
-                self.next_number = nn + str(seq)
+                self.next_invoice_number =  nn + str(seq)
             else:
-                self.next_number = '1'
+                self.next_invoice_number =  '1'
         else:
-            self.next_number = ""
+            self.next_invoice_number =  "ERROR"
     
     @api.onchange('supplier_invoice_number')
     def update_reference(self):
-        if self.partner_id and self.supplier_invoice_number and len(self.supplier_invoice_number)>0:
-            cr = self.env.cr
-            uid = self.env.user.id
-            account_invoice_obj = self.pool.get('account.invoice')
-            account_invoices = account_invoice_obj.search(cr, uid, [('supplier_invoice_number', '=', self.supplier_invoice_number),('partner_id','=',self.partner_id.id)])
+        if self.partner_id and self.supplier_invoice_number and len(self.supplier_invoice_number) > 0:
+            account_invoices = self.env['account.invoice'].search([[('supplier_invoice_number', '=', self.supplier_invoice_number),('partner_id','=',self.partner_id.id)]])
             if account_invoices:
                 self.reference = ""
-                return {'warning': {'title': 'Supplier Invoice Number Failure', 'message': 'The supplier invoice number already exists'},}
+                raise ValidationError('Supplier Invoice Number Failure - The supplier invoice number already exists')
             else:
                 self.reference = self.supplier_invoice_number
         else:
@@ -63,7 +51,7 @@ class account_next_sequence(models.Model):
     def check_validate_and_send_invoice_if_out(self):
         for line in self.invoice_line:
             if len(line.invoice_line_tax_id) == 0:
-                raise except_orm(_('No tax!'), _('A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.'))
+                raise ValidationError('No tax! - A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.')
                 self.write({'state': 'draft'})
 
         #Methods for the validation of the invoice.

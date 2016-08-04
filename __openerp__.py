@@ -22,6 +22,8 @@
 
     This module has been developed by Valentin THIRION @ AbAKUS it-solution.
     """,
-    'data': ['view/account_invoice_view.xml','view/account_move_line_view.xml'],
-    'demo': [],
+    'data': [
+        'view/account_invoice_view.xml',
+        'view/account_move_line_view.xml'
+    ],
 }
