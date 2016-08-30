@@ -1,6 +1,6 @@
 {
     'name': "AbAKUS invoice improvements",
-    'version': '9.0.1.0',
+    'version': '9.0.1.2',
     'depends': ['account'],
     'author': "Valentin THIRION & Bernard DELHEZ, AbAKUS it-solutions SARL",
     'website': "http://www.abakusitsolutions.eu",
@@ -18,7 +18,7 @@
         - it adds a filter that filters on customer accont related move lines on lines
         - it adds a filter that filters on supplier accont related move lines on lines
         - it checks if all the lines of the invoices contains at least one tax
-        - it makes the 'analytic account' field on invoices mandatory
+        - it checks if the 'analytic account' field is set
 
     This module has been developed by Valentin THIRION @ AbAKUS it-solution.
     """,

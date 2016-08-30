@@ -49,9 +49,14 @@ class account_next_sequence(models.Model):
 
     @api.multi
     def check_validate_and_send_invoice_if_out(self):
-        for line in self.invoice_line:
-            if len(line.invoice_line_tax_id) == 0:
+        for line in self.invoice_line_ids:
+            # Check if there is a tax on each line
+            if len(line.invoice_line_tax_ids) == 0:
                 raise ValidationError('No tax! - A line in this invoice does not contain any tax. This is not allowed by the system. Please, correct this.')
+                self.write({'state': 'draft'})
+            # Check if there is an analytic account on each line
+            if len(line.account_analytic_id) == 0:
+                raise ValidationError('No Analytic Account! - A line in this invoice does not contain an analytic account. This is not allowed by the system. Please, correct this.')
                 self.write({'state': 'draft'})
 
         #Methods for the validation of the invoice.
