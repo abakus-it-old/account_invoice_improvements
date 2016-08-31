@@ -62,7 +62,6 @@ class account_next_sequence(models.Model):
         #Methods for the validation of the invoice.
         self.action_date_assign()
         self.action_move_create()
-        self.action_number()
 
         if self.type == 'out_invoice':
             self.invoice_validate()
